@@ -1,153 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown</title>
+    <title>Live Countdown Timer</title>
     <style>
+        /* CSS Reset and Styling */
         * {
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
             margin: 0;
             padding: 0;
-            background: #0d0b0b;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: #0d0b0b;
-        }
-
-        p {
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            text-align: center;
-            font-size: 150px;
-            margin-top: 0px;
-            color: white;
-            padding: 200px;
-        }
-
-        #inputSection {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: #1c1a1a;
-            color: white;
-        }
-
-        input,
-        button {
-            font-size: 20px;
-            padding: 5px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            background: #333;
-            outline: none;
-            color: white;
-        }
-
-        #fullscreenBtn {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100vw;
-            height: 80px;
+            background: linear-gradient(135deg, #1e1e2f, #111119);
+            color: #ffffff;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 48px;
-            background: #222;
-            color: white;
-            cursor: pointer;
-            border: none;
-            z-index: 999;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        #fullscreenBtn:active {
-            background: #444;
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
         }
 
-        .inputsectionfull {
-            display: none;
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        /* Input Controls Layout */
+        .inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            color: #b3b3b3;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00adb5;
+            box-shadow: 0 0 8px rgba(0, 173, 181, 0.5);
+        }
+
+        /* Countdown Visual Dashboard */
+        .countdown-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .time-box {
+            background: rgba(0, 0, 0, 0.3);
+            flex: 1;
+            margin: 0 6px;
+            padding: 15px 0;
+            border-radius: 8px;
+            border-bottom: 3px solid #00adb5;
+        }
+
+        .num {
+            font-size: 32px;
+            font-weight: bold;
+            display: block;
+            color: #00adb5;
+        }
+
+        .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #a0a0a0;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .message {
+            font-size: 18px;
+            color: #ff5722;
+            margin-top: 25px;
+            font-weight: 500;
         }
     </style>
 </head>
-
 <body>
 
-    <div id="inputSection">
-        <label for="userDate" style="font-size:20px;display:block;margin-bottom:10px;"></label>
-        <input type="datetime-local" id="userDate" title="Select date and time for countdown" placeholder="YYYY-MM-DDThh:mm">
-        <button onclick="startCountdown()">Start</button>
+    <div class="container">
+        <h1>Dynamic Countdown Timer</h1>
+        
+        <!-- Input section for Target Date and Time -->
+        <div class="inputs">
+            <div class="input-group">
+                <label for="targetDate">Target Date</label>
+                <input type="date" id="targetDate">
+            </div>
+            <div class="input-group">
+                <label for="targetTime">Target Time</label>
+                <input type="time" id="targetTime" value="00:00">
+            </div>
+        </div>
+
+        <!-- Dashboard Outputs -->
+        <div class="countdown-display">
+            <div class="time-box">
+                <span class="num" id="days">00</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="time-box">
+                <span class="num" id="hours">00</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="time-box">
+                <span class="num" id="minutes">00</span>
+                <span class="label">Minutes</span>
+            </div>
+            <div class="time-box">
+                <span class="num" id="seconds">00</span>
+                <span class="label">Seconds</span>
+            </div>
+        </div>
+
+        <!-- Status alerts if date passes -->
+        <div class="message" id="statusMessage"></div>
     </div>
 
-    <button id="fullscreenBtn" onclick="toggleFullscreen()" title="Go Fullscreen">
-        &#x26F6;
-    </button>
-
-    <p id="demo"></p>
-
     <script>
-        var x; // Interval variable
+        // DOM Elements
+        const dateInput = document.getElementById('targetDate');
+        const timeInput = document.getElementById('targetTime');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const statusMessage = document.getElementById('statusMessage');
 
-        function startCountdown() {
-            // Clear any previous countdown
-            if (x) clearInterval(x);
+        // Set default input fields to local current system date
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
 
-            var input = document.getElementById("userDate").value;
-            if (!input) {
-                document.getElementById("demo").innerHTML = "Please enter a date and time.";
+        let countdownInterval;
+
+        function updateCountdown() {
+            // Read target values dynamically from UI
+            const targetDateValue = dateInput.value;
+            const targetTimeValue = timeInput.value;
+
+            if (!targetDateValue) return;
+
+            // Generate a unified target timestamp string
+            const targetDateTimeString = `${targetDateValue}T${targetTimeValue}`;
+            const targetTimestamp = new Date(targetDateTimeString).getTime();
+            
+            // Auto-fetch current system time snapshot
+            const currentTimestamp = new Date().getTime();
+            
+            // Calculate absolute difference in milliseconds
+            const difference = targetTimestamp - currentTimestamp;
+
+            // Edge condition: Timer expired or target set in past
+            if (difference <= 0) {
+                clearInterval(countdownInterval);
+                daysEl.innerText = "00";
+                hoursEl.innerText = "00";
+                minutesEl.innerText = "00";
+                secondsEl.innerText = "00";
+                statusMessage.innerText = "Time's up! The countdown event has arrived.";
                 return;
             }
-            var countDownDate = new Date(input).getTime();
 
-            x = setInterval(function () {
-                var now = new Date().getTime();
-                var distance = countDownDate - now;
+            // Clear previous warning strings if valid
+            statusMessage.innerText = "";
 
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById("demo").innerHTML = "EXPIRED";
-                    return;
-                }
+            // Time math conversions
+            const daysLeft = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hoursLeft = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const secondsLeft = Math.floor((difference % (1000 * 60)) / 1000);
 
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-                    + minutes + "m " + seconds + "s ";
-            }, 1000);
+            // Pad values with leading zeros for structured 2-digit clock look
+            daysEl.innerText = String(daysLeft).padStart(2, '0');
+            hoursEl.innerText = String(hoursLeft).padStart(2, '0');
+            minutesEl.innerText = String(minutesLeft).padStart(2, '0');
+            secondsEl.innerText = String(secondsLeft).padStart(2, '0');
         }
 
-        function toggleFullscreen() {
-            const elem = document.documentElement;
-            if (!document.fullscreenElement) {
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.mozRequestFullScreen) { // Firefox
-                    elem.mozRequestFullScreen();
-                } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) { // IE/Edge
-                    elem.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-        }
+        // Event triggers to instantly recalculate values upon changes
+        dateInput.addEventListener('input', () => {
+            clearInterval(countdownInterval);
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        });
+
+        timeInput.addEventListener('input', () => {
+            clearInterval(countdownInterval);
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        });
+
+        // Initialize the interval loop when the webpage boots
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
     </script>
 </body>
-
-
 </html>
