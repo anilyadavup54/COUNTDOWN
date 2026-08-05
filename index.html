@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Black Countdown & Fullscreen</title>
+    <title>Minimalist Sand-Timer Countdown</title>
     <style>
-        /* Modern CSS Clean Reset */
+        /* Modern CSS Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', Courier, monospace; /* Clean digital font feel */
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
         /* Pure Black Dark Theme Background */
@@ -23,40 +23,52 @@
             min-height: 100vh;
             padding: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
 
         /* Container Framework */
         .container {
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
             text-align: center;
             padding: 20px;
         }
 
-        /* Hide interface elements automatically when in fullscreen mode */
+        /* Hide specific interface components automatically inside native fullscreen mode */
         body:fullscreen .hide-on-fullscreen {
             display: none !important;
         }
 
-        h1 {
-            font-size: 20px;
-            font-weight: 400;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            color: #888888;
+        /* Custom Bold Title Display Header */
+        .custom-headline {
+            font-size: clamp(24px, 5vw, 42px);
+            font-weight: 900; /* Ultra bold weight setting */
             text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            color: #ffffff;
+            line-height: 1.2;
+            word-wrap: break-word;
         }
 
-        /* User Configuration Inputs Layout */
+        /* Setup Interface Core Flex Layout grid */
+        .config-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            background: #050505;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #111111;
+        }
+
         .controls-wrapper {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 40px;
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
+            flex: 1;
+            max-width: 400px;
         }
 
         .input-block {
@@ -67,10 +79,11 @@
 
         label {
             font-size: 11px;
-            color: #555555;
+            color: #666666;
             text-transform: uppercase;
             margin-bottom: 5px;
             letter-spacing: 1px;
+            font-weight: 600;
         }
 
         input {
@@ -78,68 +91,98 @@
             border: 1px solid #222222;
             color: #ffffff;
             padding: 12px;
-            font-size: 16px;
-            border-radius: 4px;
+            font-size: 15px;
+            border-radius: 6px;
             outline: none;
-            text-align: center;
+            transition: border-color 0.2s;
         }
 
         input:focus {
-            border-color: #ffffff;
+            border-color: #444444;
         }
 
-        /* Dashboard Numbers Frame */
+        /* Sand Timer Rotating Icon Component Frame */
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-left: 10px;
+        }
+
+        /* CSS Keyframe Animation Sequence Engine for continuous loop rotations */
+        @keyframes endlessRotation {
+            0% { transform: rotate(0deg); }
+            45% { transform: rotate(0deg); }
+            55% { transform: rotate(180deg); }
+            100% { transform: rotate(180deg); }
+        }
+
+        .sand-timer-svg {
+            width: 70px;
+            height: 70px;
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: endlessRotation 4s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+
+        /* Dashboard Numbers Layout display panel grid */
         .display-board {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
             margin: 20px 0;
         }
 
         .time-card {
-            min-width: 100px;
-            padding: 10px;
+            min-width: 110px;
         }
 
-        /* Giant Numeric Values */
+        /* Giant Numeric Values formatting text */
         .digit {
-            font-size: clamp(40px, 8vw, 75px);
-            font-weight: bold;
+            font-size: clamp(45px, 9vw, 85px);
+            font-weight: 800;
             display: block;
             color: #ffffff;
             line-height: 1;
+            font-variant-numeric: tabular-nums; /* Prevents shifting shake text jitters */
         }
 
         .tag {
             font-size: 11px;
-            color: #444444;
+            color: #555555;
             text-transform: uppercase;
-            margin-top: 8px;
+            margin-top: 10px;
             display: block;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-weight: 600;
         }
 
-        /* Dynamic Status Feedback */
+        /* Notice banner container alerts output styles */
         .notice {
-            font-size: 14px;
+            font-size: 13px;
             color: #ff3333;
-            margin-top: 20px;
+            margin-top: 30px;
             letter-spacing: 1px;
+            font-weight: 500;
         }
 
-        /* Action Buttons styling */
+        /* Interactive Action Buttons styling */
         .btn-fullscreen {
             background: #111111;
-            border: 1px solid #333333;
-            color: #888888;
-            padding: 10px 20px;
+            border: 1px solid #222222;
+            color: #777777;
+            padding: 12px 24px;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 4px;
+            letter-spacing: 2px;
+            border-radius: 6px;
             cursor: pointer;
             margin-top: 40px;
-            transition: 0.2s;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .btn-fullscreen:hover {
@@ -152,21 +195,39 @@
 <body>
 
     <div class="container">
-        <h1 class="hide-on-fullscreen">Target Event Countdown</h1>
+        <!-- Live Custom Target Header Node Display -->
+        <div class="custom-headline" id="headlineDisplay">MY COUNTDOWN</div>
         
-        <!-- Setup Inputs Section (Auto hides inside Fullscreen) -->
-        <div class="controls-wrapper hide-on-fullscreen">
-            <div class="input-block">
-                <label for="datePicker">Select Date</label>
-                <input type="date" id="datePicker">
+        <!-- Control Setup Area Layout block containing inputs and sand icon -->
+        <div class="config-dashboard hide-on-fullscreen">
+            <div class="controls-wrapper">
+                <div class="input-block">
+                    <label for="textInput">Custom Bold Headline Text</label>
+                    <input type="text" id="textInput" value="MY COUNTDOWN" placeholder="Type event name here...">
+                </div>
+                <div class="input-block">
+                    <label for="datePicker">Select Target Date</label>
+                    <input type="date" id="datePicker">
+                </div>
+                <div class="input-block">
+                    <label for="timePicker">Select Target Time</label>
+                    <input type="time" id="timePicker" value="00:00">
+                </div>
             </div>
-            <div class="input-block">
-                <label for="timePicker">Select Time</label>
-                <input type="time" id="timePicker" value="00:00">
+
+            <!-- Sand Timer Spinning Graphic Structure Node Element -->
+            <div class="icon-container">
+                <svg class="sand-timer-svg" viewBox="0 0 24 24">
+                    <!-- Glass Outline Structure -->
+                    <path d="M5 2h14M5 22h14M5 2c0 4 3 6 7 8m-7 -8v3m14 -3c0 4-3 6-7 8m7 -8v3" />
+                    <path d="M5 22c0-4 3-6 7-8m-7 8v-3m14 3c0-4-3-6-7-8m7 8v-3" />
+                    <!-- Sand Elements Inside -->
+                    <path d="M6 6h12M7 8h10M11 12h2M7 16h10M6 18h12" opacity="0.6" stroke-width="1.5" />
+                </svg>
             </div>
         </div>
 
-        <!-- Timer Panel Outputs (Stays Visible Everywhere) -->
+        <!-- Timer Matrix Numerical Output Blocks -->
         <div class="display-board">
             <div class="time-card">
                 <span class="digit" id="daysDisplay">00</span>
@@ -178,32 +239,29 @@
             </div>
             <div class="time-card">
                 <span class="digit" id="minsDisplay">00</span>
-                <span class="tag">Mins</span>
-            </div>
-            <div class="time-card">
-                <span class="digit" id="secsDisplay">00</span>
-                <span class="tag">Secs</span>
+                <span class="tag">Minutes</span>
             </div>
         </div>
 
         <div class="notice" id="alertNotice"></div>
 
-        <!-- Fullscreen Trigger UI -->
-        <button class="btn-fullscreen hide-on-fullscreen" id="fullscreenBtn">Enter Fullscreen</button>
+        <!-- Fullscreen Activation Button Control element -->
+        <button class="btn-fullscreen hide-on-fullscreen" id="fullscreenBtn">Launch Fullscreen</button>
     </div>
 
     <script>
-        // DOM Elements
+        // DOM Elements Initialization Mapping Selection
+        const textInput = document.getElementById('textInput');
+        const headlineDisplay = document.getElementById('headlineDisplay');
         const datePicker = document.getElementById('datePicker');
         const timePicker = document.getElementById('timePicker');
         const daysDisplay = document.getElementById('daysDisplay');
         const hoursDisplay = document.getElementById('hoursDisplay');
         const minsDisplay = document.getElementById('minsDisplay');
-        const secsDisplay = document.getElementById('secsDisplay');
         const alertNotice = document.getElementById('alertNotice');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        // Set Default Date Input Field value to Local Current System Day
+        // Set Default Input Calibration values to Current Local System Date Tracking Structure
         const currentSystemDate = new Date();
         const year = currentSystemDate.getFullYear();
         const month = String(currentSystemDate.getMonth() + 1).padStart(2, '0');
@@ -212,70 +270,24 @@
 
         let countdownLoop;
 
-        // Core Countdown Engine Math Logic
+        // Interactive Title Update Routine Handler
+        textInput.addEventListener('input', () => {
+            const trimmedText = textInput.value.trim();
+            headlineDisplay.innerText = trimmedText !== "" ? trimmedText : "COUNTDOWN";
+        });
+
+        // Core Mathematical Time Delta Processing Method Engine Loop 
         function parseAndRefreshClock() {
             const chosenDate = datePicker.value;
             const chosenTime = timePicker.value;
 
             if (!chosenDate) return;
 
-            // Merging fields to valid ISO standard timestamp
+            // Merge dynamic field configuration options into structured ISO timestamps
             const combinedString = `${chosenDate}T${chosenTime}`;
             const targetMs = new Date(combinedString).getTime();
             
-            // Auto capture current ongoing system clock frame
+            // Read tracking snapshot data from device hardware framework clock
             const currentMs = new Date().getTime();
             const timeDifference = targetMs - currentMs;
 
-            // Scenario tracking when target parameter passes out 
-            if (timeDifference <= 0) {
-                clearInterval(countdownLoop);
-                daysDisplay.innerText = "00";
-                hoursDisplay.innerText = "00";
-                minsDisplay.innerText = "00";
-                secsDisplay.innerText = "00";
-                alertNotice.innerText = "[ EVENT HAS COMMENCED / TIME ELAPSED ]";
-                return;
-            }
-
-            alertNotice.innerText = ""; // Wipe warning labels
-
-            // Math breakdowns 
-            const calcDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            const calcHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const calcMins = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-            const calcSecs = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-            // Print values inside target layouts formatting into twin character sets
-            daysDisplay.innerText = String(calcDays).padStart(2, '0');
-            hoursDisplay.innerText = String(calcHours).padStart(2, '0');
-            minsDisplay.innerText = String(calcMins).padStart(2, '0');
-            secsDisplay.innerText = String(calcSecs).padStart(2, '0');
-        }
-
-        // Event hooks to trigger instant tracking re-calculations on modifications
-        function resetIntervalEngine() {
-            clearInterval(countdownLoop);
-            parseAndRefreshClock();
-            countdownLoop = setInterval(parseAndRefreshClock, 1000);
-        }
-
-        datePicker.addEventListener('input', resetIntervalEngine);
-        timePicker.addEventListener('input', resetIntervalEngine);
-
-        // Native Fullscreen API Integration Manager
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    alert(`Error attempting to enable full-screen mode: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        // Initialize immediately upon code generation setup
-        resetIntervalEngine();
-    </script>
-</body>
-</html>
